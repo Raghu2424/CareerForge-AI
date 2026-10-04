@@ -73,6 +73,8 @@ function App() {
   </div>;
 }
 
+export default App;
+
 function PageHeading({eyebrow,title,subtitle,action}) { return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>; }
 function Dashboard({profile,assessment,doneCount}) {
   const score=assessment?.score||0; const skillCount=profile?.skills?.length||0; const target=profile?.targetRole||'Full Stack Developer'; const first=profile?.name?.split(' ')[0]||'there';

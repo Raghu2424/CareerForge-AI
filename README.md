@@ -22,6 +22,7 @@ The frontend never receives the Gemini key or Firebase Admin credential. API wor
 careerforge-ai/
 ├── index.html
 ├── package.json
+├── package-lock.json
 ├── vite.config.js
 ├── tailwind.config.js
 ├── postcss.config.js
@@ -31,12 +32,14 @@ careerforge-ai/
 │   ├── App.jsx
 │   ├── api.js
 │   └── styles.css
-└── server/
+├── server/
     ├── index.js
     ├── ai.js
     ├── data.js
     ├── store.js
     └── prompts/README.md
+└── api/
+    └── [...path].js       # Vercel Node function that exposes the Express API
 ```
 
 ## Requirements
@@ -122,11 +125,11 @@ We are looking for a Full Stack Developer Intern to build accessible React inter
 
 1. In Render, create a Blueprint from this repository; `render.yaml` installs dependencies, builds the frontend and runs the Express service on one origin.
 2. Set `GEMINI_API_KEY` in the Render service environment to enable Gemini. Without it, all screens work in demo mode.
-3. Alternatively, deploy the Vite `dist/` output to Vercel using `vercel.json` and deploy the API separately. Set `CLIENT_ORIGIN` on the API to the Vercel origin.
+3. For Vercel, import the GitHub repository and keep the project root at the repository root. `vercel.json` builds the Vite frontend, while `api/[...path].js` exposes the Express endpoints as serverless functions. The frontend and API share the same origin; add `GEMINI_API_KEY` in Vercel Project Settings → Environment Variables to enable Gemini.
 4. Add secrets in the hosting provider environment, not in source control.
 5. Configure Firebase ID token verification and real sign-in before allowing user-specific production data; restrict CORS, add monitoring, retention and deletion flows.
 
-This repository has no CI or test suite yet. Before production, add unit/integration tests for scoring, validation, auth boundaries, file upload limits, Firestore rules, AI schema parsing and error handling. Do not run the demo in a public multi-user environment: demo identity is intentionally not authenticated.
+GitHub Actions runs the production frontend build on pushes and pull requests. Before production, add integration tests for scoring, validation, auth boundaries, file upload limits, Firestore rules, AI schema parsing and error handling. Do not run the demo in a public multi-user environment: demo identity is intentionally not authenticated.
 
 ## Future improvements
 

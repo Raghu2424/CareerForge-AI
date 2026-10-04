@@ -105,4 +105,8 @@ if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && proc
   const { initializeApp, cert, getApps } = await import('firebase-admin/app');
   if (!getApps().length) initializeApp({ credential: cert({ projectId: process.env.FIREBASE_PROJECT_ID, clientEmail: process.env.FIREBASE_CLIENT_EMAIL, privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') }) });
 }
-app.listen(port, () => console.log(`CareerForge API listening on http://localhost:${port}`));
+export default app;
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  app.listen(port, () => console.log(`CareerForge API listening on http://localhost:${port}`));
+}
