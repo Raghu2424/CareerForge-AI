@@ -26,7 +26,7 @@ function App() {
   const location = useLocation();
   const refresh = useCallback(async () => {
     setLoading(true); setPageError('');
-    try { const [p, a] = await Promise.all([api.profile(), api.assessment()]); setProfile(p.profile); setAssessment(a.assessment); const h = await fetch('/api/health').then(r => r.json()).catch(() => ({})); setHealth(h); }
+    try { const p = await api.profile(); const a = await api.assessment(p.profile?.targetRole || 'Full Stack Developer'); setProfile(p.profile); setAssessment(a.assessment); const h = await fetch('/api/health').then(r => r.json()).catch(() => ({})); setHealth(h); }
     catch (e) { setPageError(e.message); } finally { setLoading(false); }
   }, []);
   useEffect(() => { refresh(); }, [refresh]);
