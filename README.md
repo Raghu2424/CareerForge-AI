@@ -53,7 +53,7 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
-Open <http://localhost:5173>. The Express API uses port 3001 by default. Without API credentials, sample profile data and demo workflows are available immediately. `npm run build` generates the static frontend in `dist/`; `npm start` serves the API only, so deploy the static frontend separately or configure a reverse proxy for `/api`.
+Open <http://localhost:5173>. The Express API uses port 3001 by default. Without API credentials, sample profile data and demo workflows are available immediately. `npm run build` generates the frontend in `dist/`; `npm start` serves the API and, when the build exists, the frontend from the same origin. The included Render Blueprint builds both and can deploy the full application as one service.
 
 ## Configure AI and persistence
 
@@ -120,9 +120,9 @@ We are looking for a Full Stack Developer Intern to build accessible React inter
 
 ## Deployment notes
 
-1. Deploy the Vite `dist/` output to Vercel or Netlify.
-2. Deploy `server/` and its dependencies to a Node.js host (for example Render, Fly.io or a container platform).
-3. Set the frontend `/api` rewrite/proxy to the backend origin and set `CLIENT_ORIGIN` to the deployed frontend origin.
+1. In Render, create a Blueprint from this repository; `render.yaml` installs dependencies, builds the frontend and runs the Express service on one origin.
+2. Set `GEMINI_API_KEY` in the Render service environment to enable Gemini. Without it, all screens work in demo mode.
+3. Alternatively, deploy the Vite `dist/` output to Vercel using `vercel.json` and deploy the API separately. Set `CLIENT_ORIGIN` on the API to the Vercel origin.
 4. Add secrets in the hosting provider environment, not in source control.
 5. Configure Firebase ID token verification and real sign-in before allowing user-specific production data; restrict CORS, add monitoring, retention and deletion flows.
 

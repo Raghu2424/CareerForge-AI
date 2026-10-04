@@ -6,6 +6,8 @@ import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import { z } from 'zod';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { roles, defaultProfile, roadmapTemplate } from './data.js';
 import { generate } from './ai.js';
 import { getProfile, saveProfile } from './store.js';
@@ -85,6 +87,17 @@ app.post('/api/assistant', async (req, res, next) => {
     profile.conversations = [...(profile.conversations || []), { role: 'user', text: message, at: new Date().toISOString() }, { role: 'assistant', text: reply, at: new Date().toISOString() }].slice(-20); await saveProfile(req.body.userId || 'demo', profile); res.json({ reply, source: ai ? 'gemini' : 'demo' });
   } catch (e) { next(e); }
 });
+
+// In production, serve the Vite build from the same origin as the API so a
+// single Render service provides a working end-to-end demo without rewrites.
+const frontendPath = fileURLToPath(new URL('../dist', import.meta.url));
+if (existsSync(frontendPath)) {
+  app.use(express.static(frontendPath, { index: false, maxAge: '1h' }));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(fileURLToPath(new URL('../dist/index.html', import.meta.url)));
+  });
+}
 
 app.use((err, _req, res, _next) => { const status = err instanceof z.ZodError ? 400 : err.code === 'LIMIT_FILE_SIZE' ? 413 : err.message?.includes('PDF') ? 400 : 500; if (status === 500) console.error(err); res.status(status).json({ error: status === 500 ? 'Something went wrong. Please try again.' : err instanceof z.ZodError ? err.issues.map(i => i.message).join(', ') : err.message }); });
 

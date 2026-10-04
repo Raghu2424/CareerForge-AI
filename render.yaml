@@ -3,14 +3,14 @@ services:
     name: careerforge-ai-api
     runtime: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install --no-audit --no-fund && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 20
       - key: CLIENT_ORIGIN
-        value: https://careerforge-ai.vercel.app
+        value: https://careerforge-ai-api.onrender.com
       - key: GEMINI_API_KEY
         sync: false
       - key: FIREBASE_PROJECT_ID
